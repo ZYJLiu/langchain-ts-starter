@@ -11,7 +11,6 @@ import { callbackManager } from "../utils.js"
 
 export async function run() {
   const model = new OpenAI({
-    openAIApiKey: process.env.OPENAI_API_KEY,
     modelName: "gpt-3.5-turbo",
     temperature: 1,
     streaming: true,
