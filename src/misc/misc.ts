@@ -51,25 +51,25 @@ export async function run() {
     llm: chat,
   })
 
-  //   const response = await chain.call({
-  //     input: "write a poem about bananas",
+  const response = await chain.call({
+    input: "write a poem about bananas",
+  })
+
+  console.log(response)
+
+  //   const responseA = await chain.call({
+  //     input:
+  //       "write template about assessing students in a classroom and a lesson about american history",
   //   })
 
-  //   console.log(response)
+  //   // { response: 'Assessment and grading, Lesson planning' }
+  //   console.log(responseA)
 
-  const responseA = await chain.call({
-    input:
-      "write template about assessing students in a classroom and a lesson about american history",
-  })
+  //   const responseB = await chain.call({
+  //     input:
+  //       "what was the previous question I asked and what topics are they related to?",
+  //   })
 
-  // { response: 'Assessment and grading, Lesson planning' }
-  console.log(responseA)
-
-  const responseB = await chain.call({
-    input:
-      "what was the previous question I asked and what topics are they related to?",
-  })
-
-  // {response: 'The previous question you asked was "Please analyze the given input and determine if it relates to any of the following Topics." and the related topics are Lesson planning, Assessment and grading, Classroom management, Professional development, and Student engagement.'}
-  console.log(responseB)
+  //   // {response: 'The previous question you asked was "Please analyze the given input and determine if it relates to any of the following Topics." and the related topics are Lesson planning, Assessment and grading, Classroom management, Professional development, and Student engagement.'}
+  //   console.log(responseB)
 }
