@@ -12,6 +12,7 @@ import { PromptTemplate } from "langchain/prompts"
 import { callbackManager } from "utils.js"
 import { BufferMemory } from "langchain/memory"
 import { StructuredOutputParser } from "langchain/output_parsers"
+import { z } from "zod"
 
 export async function run() {
   const filePath = path.resolve(
@@ -37,19 +38,34 @@ export async function run() {
     Follow Up Input: {question}
     Standalone question:`)
 
-  const parser = StructuredOutputParser.fromNamesAndDescriptions({
-    IntendDescription: "Intend Description",
-    CosineSimilarity: "Cosine Similarity",
-  })
+  // const parser = StructuredOutputParser.fromNamesAndDescriptions({
+  //   IntendDescription: "Intend Description",
+  //   CosineSimilarity: "Cosine Similarity",
+  // })
+
+  const parser = StructuredOutputParser.fromZodSchema(
+    z.object({
+      Intent: z
+        .string()
+        .optional()
+        .describe("Intent of user's question matched to context"),
+      Similarity: z
+        .string()
+        .optional()
+        .describe("cosine similarity score of user's question to each intent"),
+    })
+  )
 
   const formatInstructions = parser.getFormatInstructions()
 
   const QA_PROMPT = PromptTemplate.fromTemplate(
-    `Return only the respective "Intent Description" of the "User Request" from the context with the highest cosine similarity to the question and the cosine similarity score.
+    `Return only the respective "Intent Description" of the "User Request" from the context with the highest cosine similarity to the question and the cosine similarity score if > 0.
 
     Context:[{context}]
+
     Question: {question}
-    Intent Description: {format_instructions}`,
+
+    {format_instructions}`,
     { partialVariables: { format_instructions: formatInstructions } }
   )
 
@@ -66,7 +82,7 @@ export async function run() {
       temperature: 0,
       modelName: "gpt-3.5-turbo",
       streaming: false,
-      // callbackManager: callbackManager,
+      callbackManager: callbackManager,
     }),
     { prompt: QA_PROMPT }
   )
@@ -79,17 +95,17 @@ export async function run() {
     k: 3, //number of source documents to return
   })
 
-  // const response = await chain.call({
-  //   question: "Send a banana to a baby monkey",
-  //   chat_history: [],
-  // })
-
-  // console.log("Response:", response.text)
-
-  const response2 = await chain.call({
-    question: "Create a template for an activity plan for a 3rd grade class",
+  const response = await chain.call({
+    question: "write a poem about bananas",
     chat_history: [],
   })
 
-  console.log(response2.text)
+  console.log("Response:", response.text)
+
+  // const response2 = await chain.call({
+  //   question: "Create a template for an activity plan for a 3rd grade class",
+  //   chat_history: [],
+  // })
+
+  // console.log(response2.text)
 }

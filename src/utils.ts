@@ -9,9 +9,9 @@ export const callbackManager = CallbackManager.fromHandlers({
       console.log(prompt)
     })
   },
-  handleLLMEnd: async (output: LLMResult) => {
-    console.log(JSON.stringify(output, null, 2))
-  },
+  // handleLLMEnd: async (output: LLMResult) => {
+  //   console.log(JSON.stringify(output, null, 2))
+  // },
   handleLLMError: async (err: Error) => {
     console.error(err)
   },

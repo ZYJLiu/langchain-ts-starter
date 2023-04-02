@@ -30,13 +30,15 @@
     "d3-dsv": "^3.0.1",
     "dotenv": "^16.0.3",
     "hnswlib-node": "^1.4.2",
-    "langchain": "^0.0.42",
+    "langchain": "^0.0.45",
+    "prompts": "^2.4.2",
     "serpapi": "^1.1.1"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.2",
     "@types/js-yaml": "^4",
     "@types/node": "^18.15.5",
+    "@types/prompts": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
     "eslint": "^8.33.0",
