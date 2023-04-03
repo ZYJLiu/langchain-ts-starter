@@ -1,4 +1,4 @@
-//  npm run start ./misc/chat.ts
+//  npm run start ./misc/chat2.ts
 import { ChatOpenAI } from "langchain/chat_models"
 import { HumanChatMessage, SystemChatMessage } from "langchain/schema"
 import {

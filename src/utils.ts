@@ -15,8 +15,8 @@ export const callbackManager = CallbackManager.fromHandlers({
   handleLLMError: async (err: Error) => {
     console.error(err)
   },
-  //   // streams token responses from the LLM
-  //   async handleLLMNewToken(token: string) {
-  //     console.log({ token })
-  //   },
+  // streams token responses from the LLM
+  async handleLLMNewToken(token: string) {
+    console.log({ token })
+  },
 })
