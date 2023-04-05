@@ -1,3 +1,4 @@
+//  npm run start ./agents/customAgent.ts
 import {
   LLMSingleActionAgent,
   AgentActionOutputParser,
@@ -21,17 +22,22 @@ import {
 import { SerpAPI, Calculator, Tool } from "langchain/tools"
 import prompts from "prompts"
 import { callbackManager } from "utils.js"
-import { clarificationTool, profileTool } from "./tool.js"
+import { profileTool } from "../tools/profileTool.js"
+import { clarificationTool } from "../tools/clarificationTool.js"
+import { translationTool } from "../tools/translationTool.js"
 
-const PREFIX = `Always use the provided format. Always respond speaking directly to the user. You have access to the following tools:`
+const PREFIX = `Always use the provided format.
+Always respond speaking directly to the user.
+You have access to the following tools:`
+
 const formatInstructions = (
   toolNames: string
-) => `Always respond with the following format:
+) => `You must also generate the following format:
 
 Question: the input you respond to
 Thought: you should always think about what to do
-Action: the action to take, should be one of [${toolNames}], always generate this
-Action Input: the input to the action, always generate this
+Action: the action to take, should be one of [${toolNames}]
+Action Input: the input to the action
 Observation: the result of the action
 ... (this Thought/Action/Action Input/Observation can repeat N times)
 Thought: I now know the final answer
@@ -85,6 +91,10 @@ class CustomPromptTemplate extends BaseStringPromptTemplate {
   }
 }
 
+interface CustomAgentFinish extends AgentFinish {
+  text: string
+}
+
 class CustomOutputParser extends AgentActionOutputParser {
   async parse(text: string): Promise<AgentAction | AgentFinish> {
     if (text.includes("Final Answer:")) {
@@ -96,7 +106,8 @@ class CustomOutputParser extends AgentActionOutputParser {
 
     const match = /Action: (.*)\nAction Input: (.*)/s.exec(text)
     if (!match) {
-      throw new Error(`Could not parse LLM output: ${text}`)
+      console.log("FAIL PARSE:", text)
+      return { log: text, text } as CustomAgentFinish
     }
 
     return {
@@ -120,11 +131,13 @@ export const run = async () => {
     modelName: "gpt-4",
     // modelName: "gpt-3.5-turbo",
   })
+
   const tools = [
     new SerpAPI(),
     new Calculator(),
     clarificationTool,
     profileTool,
+    translationTool,
   ]
 
   const llmChain = new LLMChain({

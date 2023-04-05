@@ -1,51 +1,15 @@
 import { DynamicTool } from "langchain/tools"
 import { ChatOpenAI } from "langchain/chat_models"
-import { HumanChatMessage, SystemChatMessage } from "langchain/schema"
 import {
   SystemMessagePromptTemplate,
   HumanMessagePromptTemplate,
   ChatPromptTemplate,
   MessagesPlaceholder,
-  PromptTemplate,
 } from "langchain/prompts"
-import { StructuredOutputParser } from "langchain/output_parsers"
-import {
-  ChatVectorDBQAChain,
-  ConversationChain,
-  LLMChain,
-  loadQAChain,
-} from "langchain/chains"
-import { HNSWLib } from "langchain/vectorstores"
-import { OpenAIEmbeddings } from "langchain/embeddings"
+import { ChatVectorDBQAChain, ConversationChain } from "langchain/chains"
 import { callbackManager } from "../utils.js"
 import { BufferMemory } from "langchain/memory"
-import { z } from "zod"
 import prompts from "prompts"
-import path from "node:path"
-import url from "node:url"
-import { OpenAIChat } from "langchain/llms"
-
-export const clarificationTool = new DynamicTool({
-  name: "clarification_tool",
-  description: `Ask the user a follow up question for clarification.
-    Create an input to ask the user.
-    Only responses from the user is allowed.
-    DO NOT MAKE UP RETURN VALUES.
-    `,
-  func: async (input: string) => {
-    console.log("CLARIFICATION INPUT:", input)
-    var output = (
-      await prompts({
-        type: "text",
-        name: "question",
-        message: input,
-      })
-    ).question
-    console.log("CLARIFICATION OUTPUT", output)
-
-    return output
-  },
-})
 
 export const profileTool = new DynamicTool({
   name: "profile_tool",
@@ -98,7 +62,7 @@ export const profileTool = new DynamicTool({
         message: input,
       })
     ).question
-    console.log("CLARIFICATION OUTPUT", output)
+    console.log("PROFILE OUTPUT", output)
 
     const response = await chain.call({ input: output })
     console.log("Response:", response.response)
