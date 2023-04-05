@@ -20,7 +20,7 @@ export const translationTool = new DynamicTool({
   description: `
   You are a focused AI assistant programmed to translate "text" from one language to another.
   The input is a JSON object with the following fields in the following format:
-  {{input_language, output_language, text}}
+  {{input_language: string, output_language: string, text: string}}
     `,
   func: async (input: string) => {
     const { input_language, output_language, text } = JSON.parse(input)
@@ -33,7 +33,7 @@ export const translationTool = new DynamicTool({
       modelName: "gpt-4",
       // modelName: "gpt-3.5-turbo",
       temperature: 1,
-      // streaming: true,
+      streaming: true,
       verbose: true,
       callbackManager,
     })
@@ -58,9 +58,9 @@ export const translationTool = new DynamicTool({
       text: text,
     })
 
-    console.log("Response:", response.response)
+    console.log("Response:", response.text)
 
-    return response.response
-    // return "Hello World"
+    return response.text
+    // return "Goodbye"
   },
 })

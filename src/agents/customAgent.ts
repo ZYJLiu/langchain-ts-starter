@@ -35,8 +35,8 @@ const formatInstructions = (
 ) => `You must also generate the following format:
 
 Question: the input you respond to
-Thought: you should always think about what to do
-Action: the action to take, should be one of [${toolNames}]
+Thought: you should always think about what to do followed by the action to take
+Action: always generate the action to take, should be one of [${toolNames}]
 Action Input: the input to the action
 Observation: the result of the action
 ... (this Thought/Action/Action Input/Observation can repeat N times)
