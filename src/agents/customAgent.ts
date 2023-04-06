@@ -25,6 +25,7 @@ import { callbackManager } from "utils.js"
 import { profileTool } from "../tools/profileTool.js"
 import { clarificationTool } from "../tools/clarificationTool.js"
 import { translationTool } from "../tools/translationTool.js"
+import { CustomTool } from "tools/customTool.js"
 
 const PREFIX = `Always use the provided format.
 Always respond speaking directly to the user.
@@ -135,6 +136,7 @@ export const run = async () => {
   const tools = [
     new SerpAPI(),
     new Calculator(),
+    new CustomTool(),
     clarificationTool,
     profileTool,
     translationTool,
