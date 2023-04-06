@@ -1,15 +1,4 @@
 import { Tool } from "langchain/tools"
-export declare class test extends Tool {
-  name: string
-  description: string
-  func: (arg1: string) => Promise<string>
-  constructor(fields: {
-    name: string
-    description: string
-    func: (arg1: string) => Promise<string>
-  })
-  _call(input: string): Promise<string>
-}
 
 export class CustomTool extends Tool {
   name = "coin_market_cap"
