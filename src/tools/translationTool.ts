@@ -30,8 +30,8 @@ export const translationTool = new DynamicTool({
     console.log("TRANSLATION INPUT:", input)
 
     const chat = new ChatOpenAI({
-      modelName: "gpt-4",
-      // modelName: "gpt-3.5-turbo",
+      // modelName: "gpt-4",
+      modelName: "gpt-3.5-turbo",
       temperature: 1,
       streaming: true,
       verbose: true,

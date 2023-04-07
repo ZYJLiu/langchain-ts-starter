@@ -24,7 +24,7 @@ export const profileTool = new DynamicTool({
     console.log("CLARIFICATION INPUT:", input)
 
     const chat = new ChatOpenAI({
-      modelName: "gpt-4",
+      modelName: "gpt-3.5-turbo",
       temperature: 0,
       streaming: true,
       verbose: true,

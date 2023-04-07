@@ -26,6 +26,75 @@ import { profileTool } from "../tools/profileTool.js"
 import { clarificationTool } from "../tools/clarificationTool.js"
 import { translationTool } from "../tools/translationTool.js"
 import { CustomTool } from "tools/customTool.js"
+import { qaTool } from "tools/chainTool.js"
+
+let executor: AgentExecutor
+
+export const run = async () => {
+  const model = new OpenAI({
+    temperature: 0,
+    callbackManager: callbackManager,
+    // modelName: "gpt-4",
+    modelName: "gpt-3.5-turbo",
+  })
+
+  const tools = [
+    // new SerpAPI(),
+    // new Calculator(),
+    // new CustomTool(),
+    clarificationTool,
+    // profileTool,
+    // translationTool,
+    qaTool,
+  ]
+
+  const llmChain = new LLMChain({
+    prompt: new CustomPromptTemplate({
+      tools,
+      inputVariables: ["input", "agent_scratchpad"],
+    }),
+    llm: model,
+  })
+
+  const agent = new LLMSingleActionAgent({
+    llmChain,
+    outputParser: new CustomOutputParser(),
+    stop: ["\nObservation"],
+  })
+
+  executor = new AgentExecutor({
+    agent,
+    tools,
+    maxIterations: 3,
+  })
+  console.log("Loaded agent.")
+
+  await loop()
+}
+
+async function loop(response?: string) {
+  try {
+    var input = (
+      await prompts({
+        type: "text",
+        name: "input",
+        message: response ?? "Input:",
+      })
+    ).input
+
+    const res = await executor.call({ input })
+
+    await loop(res.output)
+  } catch (error: any) {
+    console.log(error)
+    let response = error.toString()
+    if (!response.startsWith("Error: Could not parse LLM output:")) {
+      throw error
+    }
+    response = response.replace("Error: Could not parse LLM output:", "")
+    await loop(response)
+  }
+}
 
 const PREFIX = `Always use the provided format.
 Always respond speaking directly to the user.
@@ -120,71 +189,5 @@ class CustomOutputParser extends AgentActionOutputParser {
 
   getFormatInstructions(): string {
     throw new Error("Not implemented")
-  }
-}
-
-let executor: AgentExecutor
-
-export const run = async () => {
-  const model = new OpenAI({
-    temperature: 0,
-    callbackManager: callbackManager,
-    modelName: "gpt-4",
-    // modelName: "gpt-3.5-turbo",
-  })
-
-  const tools = [
-    new SerpAPI(),
-    new Calculator(),
-    new CustomTool(),
-    clarificationTool,
-    profileTool,
-    translationTool,
-  ]
-
-  const llmChain = new LLMChain({
-    prompt: new CustomPromptTemplate({
-      tools,
-      inputVariables: ["input", "agent_scratchpad"],
-    }),
-    llm: model,
-  })
-
-  const agent = new LLMSingleActionAgent({
-    llmChain,
-    outputParser: new CustomOutputParser(),
-    stop: ["\nObservation"],
-  })
-
-  executor = new AgentExecutor({
-    agent,
-    tools,
-  })
-  console.log("Loaded agent.")
-
-  await loop()
-}
-
-async function loop(response?: string) {
-  try {
-    var input = (
-      await prompts({
-        type: "text",
-        name: "input",
-        message: response ?? "Input:",
-      })
-    ).input
-
-    const res = await executor.call({ input })
-
-    await loop(res.output)
-  } catch (error: any) {
-    console.log(error)
-    let response = error.toString()
-    if (!response.startsWith("Error: Could not parse LLM output:")) {
-      throw error
-    }
-    response = response.replace("Error: Could not parse LLM output:", "")
-    await loop(response)
   }
 }
