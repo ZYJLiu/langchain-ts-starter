@@ -27,6 +27,7 @@ import { clarificationTool } from "../tools/clarificationTool.js"
 import { translationTool } from "../tools/translationTool.js"
 import { CustomTool } from "tools/customTool.js"
 import { qaTool } from "tools/chainTool.js"
+import { solanaGetBalanceTool } from "tools/solanaGetBalanceTool.js"
 
 let executor: AgentExecutor
 
@@ -45,7 +46,8 @@ export const run = async () => {
     clarificationTool,
     // profileTool,
     // translationTool,
-    qaTool,
+    // qaTool,
+    solanaGetBalanceTool,
   ]
 
   const llmChain = new LLMChain({
