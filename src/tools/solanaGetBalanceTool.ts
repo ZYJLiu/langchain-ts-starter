@@ -17,7 +17,8 @@ async function getPublicKey() {
 }
 
 async function getSolanaBalance(publicKey: string) {
-  const connection = new Connection(clusterApiUrl("devnet"))
+  const connection = new Connection("https://rpc.ankr.com/solana_devnet")
+  // const connection = new Connection(clusterApiUrl("devnet"))
   try {
     const balanceInLamports = await connection.getBalance(
       new PublicKey(publicKey)
